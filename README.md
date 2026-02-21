@@ -6,6 +6,8 @@ Author 1: Junhao Liu, Email: 895232226@qq.com
 Author 2: Zeyu Luo, Email: 1024226968@qq.com, https://orcid.org/0000-0001-6650-9975
 
 Author 3: Rui Wang, Email: 2219312248@qq.com
+
+Author 4：Yujuan Zhang, Email: yujuan.zhang418@gmail.com
 ## Data available
 ### Inference Test Data
 
@@ -40,3 +42,4 @@ We are acknowledge the contributions of the open-source community and the develo
 ## Related Works
 If you are interested in feature extraction and model interpretation for large language models, you may find our previous work helpful:
 - **Interpretable feature extraction and dimensionality reduction in ESM2 for protein localization prediction**: [GitHub Repository](https://github.com/yujuan-zhang/feature-representation-for-LLMs)
+
