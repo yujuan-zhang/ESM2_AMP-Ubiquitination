@@ -1,4 +1,6 @@
 import os
+import argparse
+from pathlib import Path
 import numpy as np
 import pandas as pd
 import torch
@@ -265,11 +267,15 @@ set_seed(42)
 torch.autograd.set_detect_anomaly(True)
 
 # Define paths
-open_path = r'Your path to project'  # Placeholder path
+parser = argparse.ArgumentParser(description='Evaluate a model on bundled ESM2 features.')
+parser.add_argument('--checkpoint', type=Path, help='Path to the matching trained checkpoint')
+args = parser.parse_args()
+open_path = Path(__file__).resolve().parents[2]
+
 
 # Load data
-test_features = np.load(os.path.join(open_path, 'ESM2-Ubiquitination-Prediction', 'Inference_test_data', 'ESM2_3B_2560', 'test_features.npy'))
-test_info_df = pd.read_csv(os.path.join(open_path, 'ESM2-Ubiquitination-Prediction', 'Inference_test_data', 'ESM2_3B_2560', 'test_info.csv'))
+test_features = np.load(os.path.join(open_path, 'Inference_test_data', 'ESM2_3B_2560', 'test_features.npy'))
+test_info_df = pd.read_csv(os.path.join(open_path, 'Inference_test_data', 'ESM2_3B_2560', 'test_info.csv'))
 
 
 ## Independent test set
@@ -295,7 +301,7 @@ layer_dims = [int(best_params[f'layer_{i}_dim']) for i in range(int(num_blocks) 
 input_dim = 2560
 model = ResDNNModel(input_dim, layer_dims)
 # Load the trained model weights
-model.load_state_dict(torch.load(os.path.join(open_path, "ESM2-Ubiquitination-Prediction", "Model", "ResDNNModel", "ResDNNmodel_checkpoint_epoch_2.pth")))
+model.load_state_dict(torch.load(args.checkpoint or open_path / "Model" / "ResDNNModel" / "ResDNNmodel_checkpoint_epoch_2.pth", map_location=device))
 model.to(device)
 
 # Model inference
@@ -305,3 +311,4 @@ val_metrics = cvae_val(
 
 # Print the evaluation metrics
 print(val_metrics)
+

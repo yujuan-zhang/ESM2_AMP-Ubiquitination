@@ -1,4 +1,6 @@
 import os
+import argparse
+from pathlib import Path
 import numpy as np
 import pandas as pd
 import torch
@@ -188,11 +190,15 @@ set_seed(42)
 torch.autograd.set_detect_anomaly(True)
 
 # Define paths
-open_path = r'Your path to project'  # Placeholder path
+parser = argparse.ArgumentParser(description='Evaluate a model on bundled ESM2 features.')
+parser.add_argument('--checkpoint', type=Path, help='Path to the matching trained checkpoint')
+args = parser.parse_args()
+open_path = Path(__file__).resolve().parents[2]
+
 
 # Load data
-test_features = np.load(os.path.join(open_path, 'ESM2-Ubiquitination-Prediction', 'Inference_test_data', 'ESM2_3B_2560', 'test_features.npy'))
-test_info_df = pd.read_csv(os.path.join(open_path, 'ESM2-Ubiquitination-Prediction', 'Inference_test_data', 'ESM2_3B_2560', 'test_info.csv'))
+test_features = np.load(os.path.join(open_path, 'Inference_test_data', 'ESM2_3B_2560', 'test_features.npy'))
+test_info_df = pd.read_csv(os.path.join(open_path, 'Inference_test_data', 'ESM2_3B_2560', 'test_info.csv'))
 
 
 ## Independent test set
@@ -209,7 +215,7 @@ input_dim = 2560
 model = DNNLinearModel(input_dim).to(device)
 
 # Load the trained model weights
-model.load_state_dict(torch.load(os.path.join(open_path, "ESM2-Ubiquitination-Prediction", "Model", "DNNLinerModel", "DNNLinermodel_checkpoint_epoch_34.pth")))
+model.load_state_dict(torch.load(args.checkpoint or open_path / "Model" / "DNNLinerModel" / "DNNLinermodel_checkpoint_epoch_34.pth", map_location=device))
 model.to(device)
 
 # Model inference
@@ -219,3 +225,4 @@ val_metrics = cvae_val(
 
 # Print the evaluation metrics
 print(val_metrics)
+
